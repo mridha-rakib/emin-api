@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+@Schema({ _id: false, versionKey: false }) class LastMessage { @Prop() text?: string; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) senderId: Types.ObjectId; @Prop({ required: true }) createdAt: Date; } const LastMessageSchema = SchemaFactory.createForClass(LastMessage);
+@Schema({ timestamps: true, versionKey: false, collection: 'conversations' }) export class Conversation { @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'User' }], default: [] }) participants: Types.ObjectId[]; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Product' }) productId?: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Order' }) orderId?: Types.ObjectId; @Prop({ type: LastMessageSchema }) lastMessage?: LastMessage; }
+export type ConversationDocument = HydratedDocument<Conversation>; export const ConversationSchema = SchemaFactory.createForClass(Conversation); ConversationSchema.index({ participants: 1 });

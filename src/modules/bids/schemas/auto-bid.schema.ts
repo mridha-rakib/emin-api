@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+export type AutoBidDocument = HydratedDocument<AutoBid>;
+@Schema({ timestamps: true, versionKey: false, collection: 'autoBids' }) export class AutoBid { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Auction', required: true }) auctionId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) userId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) maxAmount: Types.Decimal128; @Prop({ type: MongooseSchema.Types.Decimal128, min: 0 }) currentAmount?: Types.Decimal128; @Prop({ default: true }) active: boolean; }
+export const AutoBidSchema = SchemaFactory.createForClass(AutoBid); AutoBidSchema.index({ auctionId: 1, userId: 1 }, { unique: true });

@@ -1,0 +1,10 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { ReviewableStatus, VerificationStatus } from '../../../common/enums/domain.enums';
+export type SellerProfileDocument = HydratedDocument<SellerProfile>;
+@Schema({ _id: true, versionKey: false }) export class SellerDocument { @Prop({ required: true }) type: string; @Prop({ required: true }) fileUrl: string; @Prop({ enum: ReviewableStatus, default: ReviewableStatus.PENDING }) status: ReviewableStatus; @Prop() rejectionReason?: string; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' }) reviewedBy?: Types.ObjectId; @Prop() reviewedAt?: Date; }
+const SellerDocumentSchema = SchemaFactory.createForClass(SellerDocument);
+@Schema({ _id: false, versionKey: false }) class SellerRating { @Prop({ default: 0, min: 0, max: 5 }) average: number; @Prop({ default: 0, min: 0 }) total: number; }
+const SellerRatingSchema = SchemaFactory.createForClass(SellerRating);
+@Schema({ timestamps: true, versionKey: false, collection: 'sellerProfiles' }) export class SellerProfile { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true, unique: true }) userId: Types.ObjectId; @Prop({ required: true }) displayName: string; @Prop() businessName?: string; @Prop() businessType?: string; @Prop() registrationNumber?: string; @Prop() taxNumber?: string; @Prop() description?: string; @Prop({ enum: VerificationStatus, default: VerificationStatus.PENDING, index: true }) verificationStatus: VerificationStatus; @Prop({ type: [SellerDocumentSchema], default: [] }) documents: SellerDocument[]; @Prop({ type: SellerRatingSchema, default: () => ({ average: 0, total: 0 }) }) rating: SellerRating; @Prop({ default: 0, min: 0 }) totalSales: number; @Prop() verifiedAt?: Date; @Prop() deletedAt?: Date; }
+export const SellerProfileSchema = SchemaFactory.createForClass(SellerProfile); SellerProfileSchema.index({ createdAt: 1 });

@@ -1,0 +1,4 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+@Schema({ timestamps: true, versionKey: false, collection: 'wallets' }) export class Wallet { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'SellerProfile', required: true, unique: true }) sellerId: Types.ObjectId; @Prop({ required: true }) currency: string; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) availableBalance: Types.Decimal128; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) pendingBalance: Types.Decimal128; }
+export type WalletDocument = HydratedDocument<Wallet>; export const WalletSchema = SchemaFactory.createForClass(Wallet);

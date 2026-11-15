@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { ReviewStatus } from '../../../common/enums/domain.enums';
+@Schema({ timestamps: true, versionKey: false, collection: 'reviews' }) export class Review { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Order', required: true }) orderId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Product', required: true }) productId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'SellerProfile', required: true }) sellerId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) reviewerId: Types.ObjectId; @Prop({ required: true, min: 1, max: 5 }) rating: number; @Prop() title?: string; @Prop() comment?: string; @Prop({ enum: ReviewStatus, default: ReviewStatus.PUBLISHED }) status: ReviewStatus; }
+export type ReviewDocument = HydratedDocument<Review>; export const ReviewSchema = SchemaFactory.createForClass(Review); ReviewSchema.index({ orderId: 1, productId: 1, reviewerId: 1 }, { unique: true });

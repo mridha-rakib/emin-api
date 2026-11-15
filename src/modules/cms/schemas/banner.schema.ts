@@ -1,0 +1,4 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+@Schema({ timestamps: true, versionKey: false, collection: 'banners' }) export class Banner { @Prop() title?: string; @Prop({ required: true }) desktopImageUrl: string; @Prop() mobileImageUrl?: string; @Prop() targetUrl?: string; @Prop({ required: true }) placement: string; @Prop({ default: 0 }) sortOrder: number; @Prop() startsAt?: Date; @Prop() endsAt?: Date; @Prop({ default: true }) active: boolean; }
+export type BannerDocument = HydratedDocument<Banner>; export const BannerSchema = SchemaFactory.createForClass(Banner); BannerSchema.index({ placement: 1, active: 1, sortOrder: 1 });

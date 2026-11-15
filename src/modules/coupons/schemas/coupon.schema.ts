@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { DiscountType } from '../../../common/enums/domain.enums';
+@Schema({ timestamps: true, versionKey: false, collection: 'coupons' }) export class Coupon { @Prop({ required: true, unique: true, uppercase: true }) code: string; @Prop({ enum: DiscountType, required: true }) discountType: DiscountType; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) discountValue: Types.Decimal128; @Prop({ type: MongooseSchema.Types.Decimal128, min: 0 }) minimumOrderAmount?: Types.Decimal128; @Prop({ type: MongooseSchema.Types.Decimal128, min: 0 }) maximumDiscountAmount?: Types.Decimal128; @Prop({ min: 0 }) usageLimit?: number; @Prop({ min: 0 }) usagePerUser?: number; @Prop() startsAt?: Date; @Prop() expiresAt?: Date; @Prop({ default: true }) active: boolean; }
+export type CouponDocument = HydratedDocument<Coupon>; export const CouponSchema = SchemaFactory.createForClass(Coupon);
