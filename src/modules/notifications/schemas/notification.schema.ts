@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { NotificationChannel } from '../../../common/enums/domain.enums';
+@Schema({ timestamps: { createdAt: true, updatedAt: false }, versionKey: false, collection: 'notifications' }) export class Notification { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) userId: Types.ObjectId; @Prop({ required: true }) type: string; @Prop({ required: true }) title: string; @Prop({ required: true }) body: string; @Prop({ type: MongooseSchema.Types.Mixed, default: {} }) data: Record<string, unknown>; @Prop({ enum: NotificationChannel, required: true }) channel: NotificationChannel; @Prop() readAt?: Date; }
+export type NotificationDocument = HydratedDocument<Notification>; export const NotificationSchema = SchemaFactory.createForClass(Notification); NotificationSchema.index({ userId: 1, createdAt: -1 }); NotificationSchema.index({ userId: 1, readAt: 1 });

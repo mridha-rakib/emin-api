@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { RefundStatus } from '../../../common/enums/domain.enums';
+@Schema({ timestamps: { createdAt: true, updatedAt: false }, versionKey: false, collection: 'refunds' }) export class Refund { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Order', required: true }) orderId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Payment', required: true }) paymentId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) requestedBy: Types.ObjectId; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) amount: Types.Decimal128; @Prop({ required: true }) reason: string; @Prop({ enum: RefundStatus, default: RefundStatus.PENDING }) status: RefundStatus; @Prop() providerRefundId?: string; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' }) reviewedBy?: Types.ObjectId; @Prop() processedAt?: Date; }
+export type RefundDocument = HydratedDocument<Refund>; export const RefundSchema = SchemaFactory.createForClass(Refund);

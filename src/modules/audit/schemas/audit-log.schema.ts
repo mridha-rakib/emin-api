@@ -1,0 +1,4 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+@Schema({ timestamps: { createdAt: true, updatedAt: false }, versionKey: false, collection: 'auditLogs' }) export class AuditLog { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' }) actorId?: Types.ObjectId; @Prop({ required: true }) action: string; @Prop({ required: true }) entityType: string; @Prop({ type: MongooseSchema.Types.ObjectId }) entityId?: Types.ObjectId; @Prop({ type: MongooseSchema.Types.Mixed }) before?: Record<string, unknown>; @Prop({ type: MongooseSchema.Types.Mixed }) after?: Record<string, unknown>; @Prop() ipAddress?: string; @Prop() userAgent?: string; }
+export type AuditLogDocument = HydratedDocument<AuditLog>; export const AuditLogSchema = SchemaFactory.createForClass(AuditLog); AuditLogSchema.index({ actorId: 1, createdAt: -1 }); AuditLogSchema.index({ entityType: 1, entityId: 1 });

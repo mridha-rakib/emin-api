@@ -1,0 +1,5 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { ShipmentStatus } from '../../../common/enums/domain.enums';
+@Schema({ timestamps: true, versionKey: false, collection: 'shipments' }) export class Shipment { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Order', required: true }) orderId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'SellerProfile', required: true }) sellerId: Types.ObjectId; @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] }) itemIds: Types.ObjectId[]; @Prop() carrier?: string; @Prop() service?: string; @Prop() trackingNumber?: string; @Prop() trackingUrl?: string; @Prop({ enum: ShipmentStatus, default: ShipmentStatus.PENDING }) status: ShipmentStatus; @Prop() shippedAt?: Date; @Prop() deliveredAt?: Date; }
+export type ShipmentDocument = HydratedDocument<Shipment>; export const ShipmentSchema = SchemaFactory.createForClass(Shipment); ShipmentSchema.index({ orderId: 1 }); ShipmentSchema.index({ sellerId: 1 });

@@ -1,0 +1,8 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { AttributeType, CategoryStatus } from '../../../common/enums/domain.enums';
+export type CategoryDocument = HydratedDocument<Category>;
+@Schema({ _id: true, versionKey: false }) export class CategoryAttribute { @Prop({ required: true }) name: string; @Prop({ enum: AttributeType, required: true }) type: AttributeType; @Prop({ default: false }) required: boolean; @Prop({ default: false }) filterable: boolean; @Prop({ type: [String], default: undefined }) options?: string[]; @Prop({ default: 0 }) sortOrder: number; }
+const CategoryAttributeSchema = SchemaFactory.createForClass(CategoryAttribute);
+@Schema({ timestamps: true, versionKey: false, collection: 'categories' }) export class Category { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category', default: null, index: true }) parentId?: Types.ObjectId | null; @Prop({ required: true }) name: string; @Prop({ required: true, unique: true }) slug: string; @Prop() description?: string; @Prop() image?: string; @Prop() nameDe?: string; @Prop() priceCHF?: number; @Prop() professionalCount?: number; @Prop() rating?: number; @Prop() reviewCount?: number; @Prop({ default: false, index: true }) featured: boolean; @Prop() icon?: string; @Prop({ type: [CategoryAttributeSchema], default: [] }) attributes: CategoryAttribute[]; @Prop({ enum: CategoryStatus, default: CategoryStatus.ACTIVE, index: true }) status: CategoryStatus; @Prop({ default: 0, index: true }) sortOrder: number; }
+export const CategorySchema = SchemaFactory.createForClass(Category);

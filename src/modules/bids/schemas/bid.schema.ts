@@ -1,0 +1,6 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
+import { BidStatus, BidType } from '../../../common/enums/domain.enums';
+export type BidDocument = HydratedDocument<Bid>;
+@Schema({ timestamps: { createdAt: true, updatedAt: false }, versionKey: false, collection: 'bids' }) export class Bid { @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Auction', required: true }) auctionId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true }) bidderId: Types.ObjectId; @Prop({ type: MongooseSchema.Types.Decimal128, required: true, min: 0 }) amount: Types.Decimal128; @Prop({ enum: BidType, required: true }) type: BidType; @Prop({ enum: BidStatus, default: BidStatus.VALID }) status: BidStatus; }
+export const BidSchema = SchemaFactory.createForClass(Bid); BidSchema.index({ auctionId: 1, amount: -1 }); BidSchema.index({ auctionId: 1, createdAt: -1 }); BidSchema.index({ bidderId: 1, createdAt: -1 });
